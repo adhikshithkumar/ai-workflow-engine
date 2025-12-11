@@ -1,65 +1,120 @@
-🚀 Mini Workflow Engine
+✨ Mini Workflow Engine (FastAPI)
 
-A lightweight FastAPI-based workflow engine that lets you define multi-step graphs, manage state transitions, run agents, and observe step-by-step execution.
+A lightweight, extensible workflow/agent execution engine built using FastAPI, supporting graph-based execution, state transitions, and custom tool integration.
+This project was built as part of an assignment to demonstrate how multi-step logic can be automated using a workflow graph.
 
-This project demonstrates a clean, modular implementation of a workflow engine suitable for automating AI agents, pipelines, and multi-step logic.
+🚀 Features
 
-📂 Project Structure
+✔ Graph-based workflow execution
+
+✔ Each node represents a "tool" (function)
+
+✔ Automatic state passing between nodes
+
+✔ Logging of each node’s execution
+
+✔ Example: Text Summarization Workflow
+
+✔ Clean FastAPI routes to create, run, and inspect workflows
+
+✔ Deployed API (Render)
+
+✔ Well-structured Python project
+
+📁 Project Structure
 ai-workflow-engine/
 │
 ├── app/
-│   ├── main.py          # FastAPI app + routes + startup events
-│   ├── engine.py        # Core workflow engine (state machine, step runner)
-│   ├── models.py        # Pydantic request/response models
-│   ├── tools.py         # Custom tools/functions used by workflow steps
-│   ├── workflows.py     # Registered workflows (summarization example)
+│   ├── main.py              # FastAPI app + default workflow
+│   ├── engine.py            # Core workflow engine
+│   ├── models.py            # Pydantic models for graph, runs, state
+│   ├── tools.py             # Functions (tools) used in workflow
+│   ├── workflows.py         # Registers tools + example workflow
 │
-├── requirements.txt     # Dependencies
-├── Procfile             # Deployment config (Render/Railway)
-└── README.md            # This file
+├── requirements.txt         # Dependencies
+├── Procfile                 # Deployment config
+└── README.md                # Documentation
 
-✨ Features
-🔹 1. Graph-based Workflow Engine
+🧠 How the Workflow Engine Works
+1. Workflow = Graph
 
-Supports:
+Each workflow is modeled as a graph:
 
-Nodes
+Nodes = steps (tools)
 
-Directed transitions
+Edges = which step comes next
 
-State passing
+State = shared dict passed across steps
 
-Logging execution history
+Example nodes:
 
-🔹 2. Clean FastAPI Endpoints
-Method	Endpoint	Description
-POST	/graph/create	Create a new workflow graph
-POST	/graph/run	Run a workflow
-GET	/graph/state/{run_id}	Retrieve execution state
-POST	/summarize	Example agent workflow
-🔹 3. Built-in Summarization Workflow
+split_text
 
-Demonstrates:
+generate_summaries
 
-Splitting text into chunks
+merge_summaries
 
-Generating chunk summaries
+refine_summary
 
-Merging summaries
+2. Engine Execution Flow
 
-Refining final summary
+1️⃣ Pick start node
+2️⃣ Execute its tool
+3️⃣ Update the shared state
+4️⃣ Jump to next node
+5️⃣ Repeat until node.next = None
 
-Returning execution log
+The engine logs each step.
 
-🔹 4. Deployment Ready
+📌 Default Summarization Workflow
 
-Works on Render, Railway, or any cloud platform using:
+Runs four steps:
 
-web: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+split_text
 
-🛠️ How to Run Locally
+generate_summaries
+
+merge_summaries
+
+refine_summary
+
+Produces:
+
+chunks
+
+intermediate summaries
+
+a final refined summary
+
+⚡ API Endpoints (FastAPI)
+📌 Create a workflow
+
+POST /graph/create
+
+📌 Run a workflow
+
+POST /graph/run
+
+📌 Get run state
+
+GET /graph/state/{run_id}
+
+📌 Simplified summarization endpoint
+
+POST /summarize
+
+🧪 Example Output
+
+Sample final result from /summarize endpoint:
+
+{
+  "summary": "FastAPI is a modern, fast web framework for building APIs with Python.",
+  "summary_length": 70
+}
+
+🛠 How to Run Locally
 1. Clone the repo
-git clone https://github.com/<your-username>/ai-workflow-engine.git
+git clone https://github.com/adhikshithkumar/ai-workflow-engine.git
 cd ai-workflow-engine
 
 2. Create a virtual environment
@@ -72,65 +127,27 @@ pip install -r requirements.txt
 4. Start the server
 uvicorn app.main:app --reload
 
-5. Visit API Docs
+5. Open documentation
+http://127.0.0.1:8000/docs
 
-Swagger UI:
-👉 http://127.0.0.1:8000/docs
+🌐 Live Deployment (Render)
 
-🧪 Example Run
-Create a graph
-POST /graph/create
-{
-  "name": "summarization_workflow"
-}
+API is deployed here:
 
-Run it
-POST /graph/run
-{
-  "graph_id": "<ID>",
-  "text": "Your long text here…"
-}
+👉 https://ai-workflow-engine.onrender.com/docs
 
-Get state
-GET /graph/state/<run_id>
+🧩 What I Would Improve with More Time
 
-🌟 What I Would Improve With More Time
-🔧 Engine Enhancements
+Add persistent storage for graphs and runs
 
-Add conditional branches
+Add async background task support
 
-Add parallel node execution
+Add user-defined workflows via UI
 
-Add async tool execution
+Support branching workflows (IF/ELSE logic)
 
-Improve logging with timestamps
+Add authentication for multi-user use
 
-📡 API Improvements
+Add tool registry with plugin system
 
-Add /health endpoint
-
-Add /workflows to list registered graphs
-
-🚀 Advanced Features (future)
-
-WebSockets for real-time state updates
-
-Integrating OpenAI / LLM-based tools
-
-Background task scheduling
-
-🎯 Evaluation Notes
-
-This implementation focuses on:
-
-Clear code structure
-
-Readable engine logic
-
-Simple state model
-
-Good API practices
-
-Step-by-step logged execution
-
-Optional features are intentionally kept minimal since clarity matters more than complexity.
+Add visualization of execution graph
